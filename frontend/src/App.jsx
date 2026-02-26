@@ -13,10 +13,22 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already authenticated
+    // Check if user is already authenticated with a non-expired token
     const token = localStorage.getItem('token');
     if (token) {
-      setAuth(true, token);
+      try {
+        // JWT payload is the middle base64 segment — check exp without a library
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const isExpired = payload.exp && payload.exp * 1000 < Date.now();
+        if (isExpired) {
+          localStorage.removeItem('token');
+        } else {
+          setAuth(true, token);
+        }
+      } catch {
+        // Malformed token — discard it
+        localStorage.removeItem('token');
+      }
     }
     setIsLoading(false);
   }, [setAuth]);

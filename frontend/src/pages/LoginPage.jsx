@@ -25,7 +25,12 @@ function LoginPage() {
       setAuth(true, access_token, username);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.detail || 'Login failed');
+      const detail = err.response?.data?.detail;
+      if (Array.isArray(detail)) {
+        setError(detail.map((e) => e.msg?.replace('Value error, ', '') ?? e).join(' · '));
+      } else {
+        setError(detail || 'Login failed');
+      }
     } finally {
       setLoading(false);
     }

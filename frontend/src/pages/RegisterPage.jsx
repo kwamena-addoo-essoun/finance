@@ -26,7 +26,7 @@ function RegisterPage() {
     setLoading(true);
 
     try {
-      const response = await authAPI.register(email, username, password);
+      await authAPI.register(email, username, password);
       
       // Auto-login after registration
       const loginResponse = await authAPI.login(username, password);
@@ -36,7 +36,13 @@ function RegisterPage() {
       setAuth(true, access_token, username);
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.detail || 'Registration failed');
+      const detail = err.response?.data?.detail;
+      if (Array.isArray(detail)) {
+        // Pydantic validation errors — join all messages
+        setError(detail.map((e) => e.msg?.replace('Value error, ', '') ?? e).join(' · '));
+      } else {
+        setError(detail || 'Registration failed');
+      }
     } finally {
       setLoading(false);
     }

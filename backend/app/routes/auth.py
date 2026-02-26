@@ -1,21 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.user import User
-from app.schemas.user import UserCreate, UserResponse
+from app.schemas.user import UserCreate, UserLogin, UserResponse
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-from jose import JWTError, jwt
+from jose import jwt
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 router = APIRouter()
 
 # Security
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-this")
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 
 def hash_password(password: str) -> str:
@@ -49,8 +46,10 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 @router.post("/login")
-async def login(username: str, password: str, db: Session = Depends(get_db)):
+async def login(credentials: UserLogin, db: Session = Depends(get_db)):
     """Login user and return token"""
+    username = credentials.username
+    password = credentials.password
     user = db.query(User).filter(User.username == username).first()
     if not user or not verify_password(password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")

@@ -1,0 +1,10 @@
+# Alembic migration versions are stored here.
+# Generate the initial migration after setting up your database:
+#
+#   cd backend
+#   alembic revision --autogenerate -m "initial schema"
+#   alembic upgrade head
+#
+# For subsequent schema changes:
+#   alembic revision --autogenerate -m "describe your change"
+#   alembic upgrade head

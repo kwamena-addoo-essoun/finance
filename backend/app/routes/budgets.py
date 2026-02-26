@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.budget import Budget
+from app.models.user import User
 from app.schemas.budget import BudgetCreate, BudgetResponse, BudgetUpdate
 from app.routes.users import get_current_user
 from typing import List
@@ -11,11 +12,11 @@ router = APIRouter()
 @router.post("/", response_model=BudgetResponse)
 async def create_budget(
     budget: BudgetCreate,
-    token: str,
-    db: Session = Depends(get_db)
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     """Create a new budget"""
-    user = get_current_user(token, db)
+    user = current_user
     
     db_budget = Budget(
         user_id=user.id,
@@ -33,9 +34,9 @@ async def create_budget(
     return db_budget
 
 @router.get("/", response_model=List[BudgetResponse])
-async def get_budgets(token: str, db: Session = Depends(get_db)):
+async def get_budgets(current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     """Get all budgets for current user"""
-    user = get_current_user(token, db)
+    user = current_user
     budgets = db.query(Budget).filter(Budget.user_id == user.id).all()
     return budgets
 
@@ -43,11 +44,11 @@ async def get_budgets(token: str, db: Session = Depends(get_db)):
 async def update_budget(
     budget_id: int,
     budget_update: BudgetUpdate,
-    token: str,
-    db: Session = Depends(get_db)
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     """Update a budget"""
-    user = get_current_user(token, db)
+    user = current_user
     budget = db.query(Budget).filter(Budget.id == budget_id, Budget.user_id == user.id).first()
     
     if not budget:
@@ -64,9 +65,9 @@ async def update_budget(
     return budget
 
 @router.delete("/{budget_id}")
-async def delete_budget(budget_id: int, token: str, db: Session = Depends(get_db)):
+async def delete_budget(budget_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     """Delete a budget"""
-    user = get_current_user(token, db)
+    user = current_user
     budget = db.query(Budget).filter(Budget.id == budget_id, Budget.user_id == user.id).first()
     
     if not budget:

@@ -31,8 +31,6 @@ env/
 node_modules/
 yarn.lock
 npm-debug.log
-.env.local
-.env.*.local
 
 # IDE
 .vscode/
@@ -42,7 +40,9 @@ npm-debug.log
 
 # Environment
 .env
-.env.example
+.env.local
+.env.*.local
+# .env.example is intentionally NOT ignored — commit it as a template
 
 # OS
 .DS_Store
