@@ -20,6 +20,7 @@ wheels/
 .installed.cfg
 *.egg
 venv/
+.venv/
 ENV/
 env/
 
@@ -31,6 +32,7 @@ env/
 node_modules/
 yarn.lock
 npm-debug.log
+build/
 
 # IDE
 .vscode/
@@ -44,6 +46,16 @@ npm-debug.log
 .env.*.local
 # .env.example is intentionally NOT ignored — commit it as a template
 
+# Backup scratch files
+*_backup.txt
+dashboard-designs.html
+login-designs.html
+logo-concepts.html
+
 # OS
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+logs/

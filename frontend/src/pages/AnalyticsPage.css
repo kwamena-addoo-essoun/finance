@@ -1,0 +1,211 @@
+﻿/* ── Analytics page ──────────────────────────────────────── */
+.analytics-page {
+  min-height: calc(100vh - 57px);
+  background: var(--bg-body);
+  transition: background .25s;
+}
+
+.an-header {
+  background: var(--bg-subbar);
+  border-bottom: 1px solid var(--border);
+  padding: 1.1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 57px;
+  z-index: 50;
+}
+
+.an-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-1);
+  margin: 0 0 .15rem;
+  letter-spacing: -.01em;
+}
+
+.an-subtitle {
+  font-size: .73rem;
+  color: var(--text-3);
+  margin: 0;
+}
+
+.an-content {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.an-error {
+  padding: 2rem;
+  text-align: center;
+  color: #ef4444;
+}
+
+.an-empty {
+  font-size: .8rem;
+  color: var(--text-3);
+  padding: 1.5rem 0;
+  text-align: center;
+}
+
+/* ── Stat cards ──────────────────────────────────────────── */
+.an-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+}
+
+.an-stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: 3px solid #6366f1;
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  transition: background .2s;
+}
+
+.an-stat-label {
+  font-size: .6rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--text-3);
+  font-weight: 700;
+  margin-bottom: .35rem;
+}
+
+.an-stat-value {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-1);
+  line-height: 1.1;
+  margin-bottom: .2rem;
+}
+
+.an-stat-sub {
+  font-size: .67rem;
+  color: var(--text-3);
+}
+
+/* ── Generic chart card ───────────────────────────────────── */
+.an-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem 1.4rem;
+  transition: background .2s, border-color .2s;
+}
+
+.an-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.an-card-title {
+  font-size: .68rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-weight: 700;
+  color: var(--text-3);
+}
+
+.an-card-meta {
+  font-size: .72rem;
+  color: #6366f1;
+  font-weight: 600;
+}
+
+/* ── Two-col layout ──────────────────────────────────────── */
+.an-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+/* ── Tooltip ────────────────────────────────────────────── */
+.an-tooltip {
+  background: var(--modal-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: .6rem .9rem;
+  font-size: .75rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+
+.an-tooltip-label {
+  font-weight: 700;
+  color: var(--text-2);
+  margin-bottom: .3rem;
+}
+
+.an-tooltip-row {
+  display: flex;
+  gap: .6rem;
+  justify-content: space-between;
+  font-weight: 600;
+}
+
+/* ── MoM table ───────────────────────────────────────────── */
+.mom-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.mom-header {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  padding: .4rem .6rem;
+  font-size: .62rem;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  color: var(--text-3);
+  font-weight: 700;
+  border-bottom: 1px solid var(--border);
+}
+
+.mom-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  padding: .6rem .6rem;
+  border-bottom: 1px solid var(--border);
+  font-size: .78rem;
+  color: var(--text-2);
+  transition: background .12s;
+  align-items: center;
+}
+
+.mom-row:last-child { border-bottom: none; }
+.mom-row:hover { background: var(--bg-card-hover); }
+
+.mom-cat {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.mom-val { font-weight: 500; }
+
+.mom-delta { font-weight: 700; }
+.mom-delta--up   { color: #ef4444; }
+.mom-delta--down { color: #10b981; }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .an-stats-grid { grid-template-columns: repeat(3, 1fr); }
+  .an-two-col    { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+  .an-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .an-content    { padding: 1rem 1rem 2rem; }
+  .mom-header, .mom-row { grid-template-columns: 1.2fr .8fr .8fr .8fr; font-size: .68rem; }
+}

@@ -1,3 +1,4 @@
+import asyncio
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import update, case
 from sqlalchemy.orm import Session
@@ -35,8 +36,10 @@ async def create_expense(
     """Create a new expense with AI categorization"""
     user = current_user
     
-    # AI-suggest category
-    ai_category = ai_service.categorize_expense(expense.title, expense.description)
+    # AI-suggest category (run sync SDK call in a thread pool to avoid blocking the event loop)
+    ai_category = await asyncio.to_thread(
+        ai_service.categorize_expense, expense.title, expense.description
+    )
     
     db_expense = Expense(
         user_id=user.id,
@@ -96,7 +99,7 @@ async def update_expense(
     old_category_id = expense.category_id
 
     # Update fields
-    update_data = expense_update.dict(exclude_unset=True)
+    update_data = expense_update.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(expense, field, value)
 

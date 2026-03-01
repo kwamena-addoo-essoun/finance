@@ -7,7 +7,7 @@ class AIService:
     def __init__(self):
         api_key = os.getenv("OPENAI_API_KEY")
         self.client = None
-        self.model = "gpt-3.5-turbo"
+        self.model = "gpt-4o-mini"  # updated from gpt-3.5-turbo (deprecated)
         self.api_key_available = api_key is not None and api_key != ""
         
         if self.api_key_available:

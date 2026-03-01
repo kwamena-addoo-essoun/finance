@@ -54,7 +54,7 @@ async def update_budget(
     if not budget:
         raise HTTPException(status_code=404, detail="Budget not found")
     
-    update_data = budget_update.dict(exclude_unset=True)
+    update_data = budget_update.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(budget, field, value)
     

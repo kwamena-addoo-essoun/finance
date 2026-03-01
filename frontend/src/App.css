@@ -1,18 +1,56 @@
+﻿/* ── Theme tokens (applied via data-theme on <html>) ─────── */
+:root {
+  --bg-body:       #0d0d12;
+  --bg-card:       rgba(255,255,255,.035);
+  --bg-card-hover: rgba(255,255,255,.055);
+  --bg-input:      rgba(255,255,255,.05);
+  --bg-subbar:     #111117;
+  --border:        rgba(255,255,255,.07);
+  --border-input:  rgba(255,255,255,.14);
+  --text-1:        #ffffff;
+  --text-2:        rgba(255,255,255,.55);
+  --text-3:        rgba(255,255,255,.3);
+  --track:         rgba(255,255,255,.07);
+  --overlay:       rgba(0,0,0,.72);
+  --modal-bg:      #17171f;
+  --modal-border:  rgba(255,255,255,.1);
+  --tag-bg:        rgba(99,102,241,.15);
+  --tag-color:     #a5b4fc;
+}
+
+[data-theme="light"] {
+  --bg-body:       #f0f2f5;
+  --bg-card:       #ffffff;
+  --bg-card-hover: #f9fafb;
+  --bg-input:      #f9fafb;
+  --bg-subbar:     #ffffff;
+  --border:        #e5e7eb;
+  --border-input:  #d1d5db;
+  --text-1:        #111827;
+  --text-2:        #4b5563;
+  --text-3:        #9ca3af;
+  --track:         #f3f4f6;
+  --overlay:       rgba(0,0,0,.5);
+  --modal-bg:      #ffffff;
+  --modal-border:  #e5e7eb;
+  --tag-bg:        #eef2ff;
+  --tag-color:     #6366f1;
+}
+
+/* ── App shell ───────────────────────────────────────────── */
 .app {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background: var(--bg-body);
+  transition: background .25s;
 }
 
 .main-content {
   flex: 1;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 2rem 1rem;
 }
 
+/* ── Global loading ──────────────────────────────────────── */
 .loading {
   display: flex;
   justify-content: center;
@@ -20,10 +58,4 @@
   min-height: 100vh;
   font-size: 1.5rem;
   color: #666;
-}
-
-@media (max-width: 768px) {
-  .main-content {
-    padding: 1rem;
-  }
 }

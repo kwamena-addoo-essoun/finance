@@ -1,6 +1,6 @@
-# AI-Powered Personal Finance Dashboard
+# Finsight
 
-A full-stack application for tracking personal finances with AI-powered insights.
+AI-powered personal finance — track expenses, manage budgets, and get smart spending insights.
 
 ## Features
 

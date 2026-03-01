@@ -2,15 +2,19 @@ import { create } from 'zustand';
 
 export const useAuthStore = create((set) => ({
   isAuthenticated: false,
-  token: null,
   user: null,
+  isVerified: false,
+  isAdmin: false,
 
-  setAuth: (isAuthenticated, token, user = null) =>
-    set({ isAuthenticated, token, user }),
+  // Call after a successful /login or session restore via /users/me
+  setAuth: (isAuthenticated, user = null, isVerified = false, isAdmin = false) => {
+    set({ isAuthenticated, user, isVerified, isAdmin });
+  },
 
+  setVerified: (isVerified) => set({ isVerified }),
+
+  // Clears local state — caller must also call authAPI.logout() to clear httpOnly cookies
   logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    set({ isAuthenticated: false, token: null, user: null });
+    set({ isAuthenticated: false, user: null, isVerified: false, isAdmin: false });
   },
 }));

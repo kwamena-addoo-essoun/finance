@@ -12,8 +12,19 @@ class UserCreate(UserBase):
     @field_validator('password')
     @classmethod
     def password_strength(cls, v: str) -> str:
+        errors = []
         if len(v) < 8:
-            raise ValueError('Password must be at least 8 characters')
+            errors.append('at least 8 characters')
+        if not any(c.isupper() for c in v):
+            errors.append('at least one uppercase letter')
+        if not any(c.islower() for c in v):
+            errors.append('at least one lowercase letter')
+        if not any(c.isdigit() for c in v):
+            errors.append('at least one digit')
+        if not any(c in '!@#$%^&*()_+-=[]{}|;:\',.<>?/~`' for c in v):
+            errors.append('at least one special character (!@#$%^&* etc.)')
+        if errors:
+            raise ValueError('Password must contain ' + ', '.join(errors))
         return v
 
     @field_validator('username')
@@ -32,6 +43,8 @@ class UserLogin(BaseModel):
 class UserResponse(UserBase):
     id: int
     user_id: str
+    is_verified: bool
+    is_admin: bool
     created_at: datetime
     updated_at: datetime
 

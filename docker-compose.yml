@@ -25,20 +25,42 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-finance_user}:${POSTGRES_PASSWORD:-finance_pass}@db:5432/${POSTGRES_DB:-finance_db}
       SECRET_KEY: ${SECRET_KEY}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost}
-    ports:
-      - "8000:8000"
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-https://${DOMAIN:-localhost}}
+    # Port 8000 is intentionally NOT published to the host — all traffic flows
+    # through the Caddy reverse proxy.  Uncomment for local debugging only:
+    # ports:
+    #   - "8000:8000"
 
   frontend:
     build:
       context: ./frontend
       args:
-        REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:8000/api}
+        REACT_APP_API_URL: ${REACT_APP_API_URL:-https://${DOMAIN:-localhost}/api}
     restart: unless-stopped
     depends_on:
       - backend
+    # Port 80 is NOT published — Caddy terminates TLS and proxies here internally.
+    # ports:
+    #   - "80:80"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
     ports:
-      - "80:80"
+      - "80:80"     # HTTP → redirected to HTTPS by Caddy automatically
+      - "443:443"   # HTTPS
+      - "443:443/udp" # HTTP/3 (QUIC)
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data       # persists TLS certificates across restarts
+      - caddy_config:/config
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    depends_on:
+      - backend
+      - frontend
 
 volumes:
   postgres_data:
+  caddy_data:
+  caddy_config:

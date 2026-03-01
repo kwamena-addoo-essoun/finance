@@ -53,7 +53,7 @@ async def update_category(
     if not category:
         raise HTTPException(status_code=404, detail="Category not found")
     
-    update_data = category_update.dict(exclude_unset=True)
+    update_data = category_update.model_dump(exclude_unset=True)
     for field, value in update_data.items():
         setattr(category, field, value)
     
