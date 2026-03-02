@@ -69,6 +69,14 @@ async def ai_chat(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    # GLBA: user must have given explicit, server-persisted AI data-sharing consent.
+    if not current_user.ai_data_consent:
+        from fastapi import HTTPException as _HTTPException
+        raise _HTTPException(
+            status_code=403,
+            detail="AI data sharing consent is required. Please enable it in the AI Chat panel.",
+        )
+
     if not ai_service.api_key_available or not ai_service.client:
         return {"reply": "AI Coach is unavailable — no OpenAI API key is configured. Add OPENAI_API_KEY to your .env file to enable this feature.", "available": False}
 

@@ -10,6 +10,8 @@ function RegisterPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [ageConfirmed, setAgeConfirmed] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -24,13 +26,23 @@ function RegisterPage() {
       return;
     }
 
+    if (!ageConfirmed) {
+      setError('You must confirm that you are at least 13 years of age.');
+      return;
+    }
+
+    if (!termsAccepted) {
+      setError('You must accept the Terms of Service and Privacy Policy to continue.');
+      return;
+    }
+
     setLoading(true);
 
     try {
       await authAPI.register(email, username, password);
       const loginResponse = await authAPI.login(username, password);
-      const { username: returnedUsername, is_verified, is_admin } = loginResponse.data;
-      setAuth(true, returnedUsername ?? username, is_verified ?? false, is_admin ?? false);
+      const { username: returnedUsername, is_verified, is_admin, ai_data_consent } = loginResponse.data;
+      setAuth(true, returnedUsername ?? username, is_verified ?? false, is_admin ?? false, ai_data_consent ?? false);
       navigate('/');
     } catch (err) {
       const detail = err.response?.data?.detail;
@@ -137,6 +149,37 @@ function RegisterPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
+            </div>
+
+            {/* ── Age verification (COPPA) ── */}
+            <div className="consent-row">
+              <input
+                id="age-confirm"
+                type="checkbox"
+                checked={ageConfirmed}
+                onChange={(e) => setAgeConfirmed(e.target.checked)}
+              />
+              <label htmlFor="age-confirm">
+                I confirm that I am at least <strong>13 years of age</strong>.
+              </label>
+            </div>
+
+            {/* ── ToS + Privacy Policy acceptance (GLBA) ── */}
+            <div className="consent-row">
+              <input
+                id="terms-accept"
+                type="checkbox"
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+              />
+              <label htmlFor="terms-accept">
+                I have read and agree to the{' '}
+                <Link to="/terms" target="_blank" rel="noreferrer">Terms of Service</Link>
+                {' '}and{' '}
+                <Link to="/privacy-policy" target="_blank" rel="noreferrer">Privacy Policy</Link>,
+                including the GLBA privacy notice and disclosure of data to OpenAI when using AI
+                features.
+              </label>
             </div>
 
             <button type="submit" disabled={loading}>

@@ -184,6 +184,7 @@ async def login(
         "username": user.username,
         "is_verified": user.is_verified,
         "is_admin": user.is_admin,
+        "ai_data_consent": user.ai_data_consent,
     }
 
 

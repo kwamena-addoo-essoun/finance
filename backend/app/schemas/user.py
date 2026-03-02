@@ -45,6 +45,7 @@ class UserResponse(UserBase):
     user_id: str
     is_verified: bool
     is_admin: bool
+    ai_data_consent: bool
     created_at: datetime
     updated_at: datetime
 

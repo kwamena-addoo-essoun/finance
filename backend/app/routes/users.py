@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
+from pydantic import BaseModel
 from app.database import get_db
 from app.models.user import User
 from app.schemas.user import UserResponse
@@ -57,6 +58,30 @@ def require_admin(current_user: User = Depends(get_current_user)) -> User:
 async def get_me(current_user: User = Depends(get_current_user)):
     """Get current user profile"""
     return current_user
+
+
+class AiConsentUpdate(BaseModel):
+    consent: bool
+
+
+@router.patch("/me/ai-consent")
+async def update_ai_consent(
+    payload: AiConsentUpdate,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Persist the user's AI data-sharing consent server-side.
+    Required by must-do.md: consent must survive browser data clears.
+    """
+    current_user.ai_data_consent = payload.consent
+    db.commit()
+    audit_log(
+        "ai_consent_updated",
+        user_id=current_user.id,
+        details={"consent": payload.consent},
+    )
+    return {"ai_data_consent": current_user.ai_data_consent}
 
 
 # ---------------------------------------------------------------------------

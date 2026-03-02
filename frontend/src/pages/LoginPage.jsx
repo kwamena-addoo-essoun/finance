@@ -20,8 +20,8 @@ function LoginPage() {
 
     try {
       const response = await authAPI.login(username, password);
-      const { username: returnedUsername, is_verified, is_admin } = response.data;
-      setAuth(true, returnedUsername ?? username, is_verified ?? false, is_admin ?? false);
+      const { username: returnedUsername, is_verified, is_admin, ai_data_consent } = response.data;
+      setAuth(true, returnedUsername ?? username, is_verified ?? false, is_admin ?? false, ai_data_consent ?? false);
       navigate('/');
     } catch (err) {
       const detail = err.response?.data?.detail;

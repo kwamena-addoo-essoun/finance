@@ -11,6 +11,9 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
 import ResendVerificationPage from './pages/ResendVerificationPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsOfServicePage from './pages/TermsOfServicePage';
+import SettingsPage from './pages/SettingsPage';
 import AccountsPage from './pages/AccountsPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import GoalsPage from './pages/GoalsPage';
@@ -64,7 +67,7 @@ function App() {
         // The access_token httpOnly cookie is sent automatically.
         // A 200 response means the session is still valid.
         const { data } = await api.get('/users/me');
-        setAuth(true, data.username, data.is_verified ?? false, data.is_admin ?? false);
+        setAuth(true, data.username, data.is_verified ?? false, data.is_admin ?? false, data.ai_data_consent ?? false);
       } catch {
         // 401 — no valid session; user stays logged out
       } finally {
@@ -96,6 +99,9 @@ function App() {
             <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/verify-email" element={<VerifyEmailPage />} />
             <Route path="/resend-verification" element={<ResendVerificationPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsOfServicePage />} />
+            <Route path="/settings" element={isAuthenticated ? <SettingsPage /> : <Navigate to="/login" />} />
           </Routes>
         </main>
         <Footer />

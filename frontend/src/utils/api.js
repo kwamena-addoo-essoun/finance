@@ -129,6 +129,7 @@ export const goalsAPI = {
 export const userAPI = {
   exportData: () => api.get('/users/me/export'),
   deleteAccount: () => api.delete('/users/me'),
+  updateAiConsent: (consent) => api.patch('/users/me/ai-consent', { consent }),
 };
 
 export default api;

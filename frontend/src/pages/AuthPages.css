@@ -289,6 +289,41 @@
   }
 }
 
+/* ── Consent / checkbox rows (register page) ── */
+.consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  margin-bottom: 1rem;
+  font-size: 0.78rem;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.consent-row input[type="checkbox"] {
+  flex-shrink: 0;
+  margin-top: .2rem;
+  width: 15px;
+  height: 15px;
+  accent-color: #6366f1;
+  cursor: pointer;
+}
+
+.consent-row label {
+  cursor: pointer;
+  font-size: 0.78rem;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  color: #4b5563;
+}
+
+.consent-row a {
+  color: #6366f1;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
 /* ── Legacy: retained for ForgotPassword / ResetPassword / VerifyEmail ── */
 .auth-logo-header {
   display: flex;

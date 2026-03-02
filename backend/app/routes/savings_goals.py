@@ -9,7 +9,7 @@ from app.schemas.savings_goal import (
     SavingsGoalContribute,
     SavingsGoalResponse,
 )
-from app.routes.auth import get_current_user
+from app.routes.users import get_current_user
 from app.models.user import User
 
 router = APIRouter()

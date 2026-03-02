@@ -1,5 +1,6 @@
 ﻿import React, { useState, useRef, useEffect } from 'react';
-import { aiAPI } from '../utils/api';
+import { aiAPI, userAPI } from '../utils/api';
+import { useAuthStore } from '../store/authStore';
 import './AIChatPanel.css';
 
 const SUGGESTED = [
@@ -11,9 +12,8 @@ const SUGGESTED = [
 ];
 
 export default function AIChatPanel({ onClose }) {
-  const [consentGiven, setConsentGiven] = useState(
-    () => localStorage.getItem('finsight-ai-consent') === '1'
-  );
+  const { aiDataConsent, setAiDataConsent } = useAuthStore();
+  const [consentGiven, setConsentGiven] = useState(aiDataConsent);
   const [messages,  setMessages]  = useState([
     { role: 'assistant', content: "Hi! I'm your Finsight AI Coach. I have access to your real spending data — ask me anything about your finances." }
   ]);
@@ -22,8 +22,14 @@ export default function AIChatPanel({ onClose }) {
   const bottomRef  = useRef(null);
   const inputRef   = useRef(null);
 
-  function handleConsent() {
-    localStorage.setItem('finsight-ai-consent', '1');
+  async function handleConsent() {
+    try {
+      await userAPI.updateAiConsent(true);
+      setAiDataConsent(true);
+    } catch {
+      // If the API call fails, still allow the session to proceed
+      // (will be enforced server-side per request)
+    }
     setConsentGiven(true);
   }
 
@@ -84,7 +90,7 @@ export default function AIChatPanel({ onClose }) {
                   Enterprise Privacy Policy
                 </a>.
               </li>
-              <li>You can revoke consent at any time by clearing app data.</li>
+              <li>You can revoke consent at any time in your account settings.</li>
             </ul>
             <div className="ai-consent-actions">
               <button className="ai-consent-accept" onClick={handleConsent}>

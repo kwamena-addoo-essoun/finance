@@ -16,8 +16,11 @@ from app.models import User, Expense, Category, Budget  # noqa: F401 - registers
 
 config = context.config
 
-# Override sqlalchemy.url from the environment variable
-config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL", "sqlite:///./finance_app.db"))
+# Override sqlalchemy.url from the environment variable.
+# configparser treats % as an interpolation character, so any % in the URL
+# (e.g. %40 for a literal @ in a password) must be escaped as %%.
+_db_url = os.getenv("DATABASE_URL", "sqlite:///./finance_app.db")
+config.set_main_option("sqlalchemy.url", _db_url.replace("%", "%%"))
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)

@@ -27,6 +27,9 @@ class User(Base):
     # Role
     is_admin = Column(Boolean, nullable=False, default=False)
 
+    # AI data-sharing consent (GLBA — persisted server-side per must-do.md)
+    ai_data_consent = Column(Boolean, nullable=False, default=False)
+
     # Relationships
     expenses = relationship("Expense", back_populates="owner")
     categories = relationship("Category", back_populates="owner")

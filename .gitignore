@@ -58,4 +58,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Sensitive local config
+config/
 logs/
