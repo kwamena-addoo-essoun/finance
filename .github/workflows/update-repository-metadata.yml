@@ -6,6 +6,11 @@ on:
       - .github/workflows/update-repository-metadata.yml
   workflow_dispatch:
 
+env:
+  REPOSITORY_DESCRIPTION: AI-powered personal finance dashboard — FastAPI, React, OpenAI, PostgreSQL
+  REPOSITORY_TOPICS_JSON: >-
+    ["personal-finance","expense-tracker","budget-management","ai-insights","fastapi","react","openai","python","postgresql","full-stack"]
+
 jobs:
   update-metadata:
     permissions:
@@ -15,26 +20,16 @@ jobs:
       - name: Update description and topics
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.REPO_ADMIN_TOKEN != '' && secrets.REPO_ADMIN_TOKEN || github.token }}
           script: |
             await github.request('PATCH /repos/{owner}/{repo}', {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              description: 'AI-powered personal finance dashboard — FastAPI, React, OpenAI, PostgreSQL'
+              description: process.env.REPOSITORY_DESCRIPTION
             });
 
             await github.request('PUT /repos/{owner}/{repo}/topics', {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              names: [
-                'personal-finance',
-                'expense-tracker',
-                'budget-management',
-                'ai-insights',
-                'fastapi',
-                'react',
-                'openai',
-                'python',
-                'postgresql',
-                'full-stack'
-              ]
+              names: JSON.parse(process.env.REPOSITORY_TOPICS_JSON)
             });
