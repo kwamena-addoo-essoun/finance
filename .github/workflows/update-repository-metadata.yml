@@ -2,10 +2,14 @@ name: Update repository metadata
 
 on:
   push:
+    paths:
+      - .github/workflows/update-repository-metadata.yml
   workflow_dispatch:
 
 jobs:
   update-metadata:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Update description and topics
