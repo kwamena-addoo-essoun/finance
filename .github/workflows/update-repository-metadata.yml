@@ -1,0 +1,65 @@
+name: Update repository metadata
+
+on:
+  push:
+    paths:
+      - .github/workflows/update-repository-metadata.yml
+  workflow_dispatch:
+
+env:
+  REPOSITORY_DESCRIPTION: AI-powered personal finance dashboard — FastAPI, React, OpenAI, PostgreSQL
+  REPOSITORY_TOPICS_JSON: >-
+    ["personal-finance","expense-tracker","budget-management","ai-insights","fastapi","react","openai","python","postgresql","full-stack"]
+
+jobs:
+  update-metadata:
+    permissions: {}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require admin token
+        env:
+          REPO_ADMIN_TOKEN: ${{ secrets.REPO_ADMIN_TOKEN }}
+        run: |
+          if [ -z "$REPO_ADMIN_TOKEN" ]; then
+            echo "::error::Missing REPO_ADMIN_TOKEN secret with permission to update repository metadata."
+            exit 1
+          fi
+
+      - name: Update description and topics
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.REPO_ADMIN_TOKEN }}
+          script: |
+            let topics;
+
+            try {
+              topics = JSON.parse(process.env.REPOSITORY_TOPICS_JSON);
+            } catch (error) {
+              throw new Error(`Invalid REPOSITORY_TOPICS_JSON value: ${error.message}`);
+            }
+
+            try {
+              await github.request('PATCH /repos/{owner}/{repo}', {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                description: process.env.REPOSITORY_DESCRIPTION,
+                headers: {
+                  accept: 'application/vnd.github+json'
+                }
+              });
+            } catch (error) {
+              throw new Error(`Failed to update repository description: ${error.message}`);
+            }
+
+            try {
+              await github.request('PUT /repos/{owner}/{repo}/topics', {
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                names: topics,
+                headers: {
+                  accept: 'application/vnd.github+json'
+                }
+              });
+            } catch (error) {
+              throw new Error(`Failed to update repository topics: ${error.message}`);
+            }
